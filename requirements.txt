@@ -8,4 +8,3 @@ pinecone[asyncio]
 google-generativeai
 sentence-transformers
 requests
-EOF
