@@ -4,7 +4,7 @@ fastapi
 uvicorn
 pydantic
 pydantic-settings
-pinecone-client
+pinecone
 google-generativeai
 sentence-transformers
 requests
