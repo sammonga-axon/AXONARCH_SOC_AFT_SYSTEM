@@ -14,8 +14,8 @@ st.set_page_config(
 )
 
 # --- HEADER ---
-st.title("AXON ARCH: SOC Alert Triage Engine")
-st.markdown("**Mission B:** The Revenue Engine. Abstracting SIEM noise into actionable intelligence.")
+st.title("AXON ARCH | SOC Alert Triage Engine")
+st.markdown("Abstracting SIEM noise into actionable intelligence.")
 st.divider()
 
 # --- STATE MANAGEMENT ---
