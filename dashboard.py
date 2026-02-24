@@ -12,9 +12,29 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# --- ACQUISITION POLISH (CSS INJECTION) ---
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;} /* Hides the top right menu */
+            footer {visibility: hidden;}    /* Hides the 'Made with Streamlit' footer */
+            header {visibility: hidden;}    /* Hides the top header bar */
+            .stButton>button {
+                width: 100%;
+                border-radius: 4px;
+                height: 3em;
+                font-weight: bold;
+            }
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 # --- HEADER ---
-st.title("AXON ARCH | SOC Alert Triage Engine")
-st.markdown("#### Abstracting SIEM Noise into Actionable Intelligence.")
+col_logo, col_title = st.columns([1, 5])
+with col_logo:
+    st.image("logo.webp", width=150)
+with col_title:
+    st.title("AXON ARCH | SOC Alert Triage Engine")
+    st.markdown("#### Abstracting SIEM Noise into Actionable Intelligence.")
 st.divider()
 
 # --- STATE MANAGEMENT ---
@@ -30,12 +50,14 @@ if 'critical_blocks' not in st.session_state:
 # --- METRICS ROW ---
 col1, col2, col3, col4 = st.columns(4)
 
+# Assume an analyst costs $50/hr and spends 15 mins (0.25 hrs) per false positive.
 roi_saved = st.session_state.suppressed_count * (50 * 0.25)
+annual_projection = roi_saved * 365 # Projected annual savings based on current run-rate
 
-col1.metric("Total Alerts Ingested", st.session_state.ingested_count)
-col2.metric("Noise Suppressed (Stage 2)", st.session_state.suppressed_count)
-col3.metric("Threats Escalated (Stage 3)", st.session_state.escalated_count)
-col4.metric("Capital Saved (ROI)", f"${roi_saved:.2f}")
+col1.metric("Alerts Ingested", st.session_state.ingested_count, delta="Live")
+col2.metric("Noise Suppressed", st.session_state.suppressed_count, delta=f"{(st.session_state.suppressed_count / max(1, st.session_state.ingested_count) * 100):.1f}% Reduction", delta_color="normal")
+col3.metric("Threats Escalated", st.session_state.escalated_count, delta="Requires Human Review", delta_color="inverse")
+col4.metric("Capital Saved (ROI)", f"${roi_saved:.2f}", delta=f"Projected: ${annual_projection:.2f}/yr")
 
 st.divider()
 
