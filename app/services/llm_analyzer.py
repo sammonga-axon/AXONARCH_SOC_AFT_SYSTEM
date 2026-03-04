@@ -1,7 +1,7 @@
 import json
-import os
 from openai import AsyncOpenAI
 from app.models.schemas import SOCAlert, TriageDecision
+from app.core.config import settings # Use the validated settings object
 from app.core.logger import logger
 
 class LLMAnalysisService:
@@ -11,15 +11,10 @@ class LLMAnalysisService:
     """
     def __init__(self):
         try:
-            # Dynamically pull the key from Render Environment Variables
-            self.api_key = os.getenv("OPENROUTER_API_KEY")
-            if not self.api_key:
-                logger.warning("OPENROUTER_API_KEY is missing. LLM will fail.")
-
             # OpenRouter uses the standard OpenAI client architecture
             self.client = AsyncOpenAI(
                 base_url="https://openrouter.ai/api/v1",
-                api_key=self.api_key,
+                api_key=settings.OPENROUTER_API_KEY,
             )
             self.model_name = "google/gemini-3.1-flash-lite-preview"
             logger.info(f"Stage 3: {self.model_name} (OpenRouter SDK) initialized.")

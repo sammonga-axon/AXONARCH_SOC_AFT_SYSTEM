@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
+from typing import Optional
 
 class Settings(BaseSettings):
     # Core Application Settings
@@ -11,9 +12,11 @@ class Settings(BaseSettings):
     PINECONE_API_KEY: str
     PINECONE_INDEX_NAME: str
     
-    # Making OpenAI optional, and requiring Gemini 1.5 Pro
-    OPENAI_API_KEY: str | None = None 
-    GEMINI_API_KEY: str
+    # New mandatory key for OpenRouter
+    OPENROUTER_API_KEY: str
+    
+    # Deprecated Gemini key (Marked optional to allow boot without it)
+    GEMINI_API_KEY: Optional[str] = None
     
     # Mission A: Local HMAC Secret for Render Deployment
     HMAC_SECRET_KEY: str = "super_secret_local_dev_key_override_in_render"
@@ -31,6 +34,5 @@ def get_settings() -> Settings:
     """
     return Settings()
 
-# --- THE MISSING INSTANTIATION ---
-# This executes at T_boot and holds the configuration in continuous RAM.
+# Instantiation for continuous RAM state
 settings = get_settings()
